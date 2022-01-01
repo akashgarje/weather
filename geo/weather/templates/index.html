@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <title>GeoWeather</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        #map {height: 350px;}
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="coordinates"></div>
+    
+    <form action="">
+        <input type="text" name='lat'>
+        <input type="text" name='lng'>
+        <button type="submit">Check Weather</button>
+    </form>
+
+    <script>
+        var map = L.map('map').setView([40.730610, -73.935242],13);
+        
+        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=TKR14E1MLvxC9LoM7o6c', {
+            attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+        }).addTo(map);
+        var marker = L.marker([40.730610, -73.935242]).addTo(map);
+
+        // map.on("contextmenu", function(event){
+        //     var x = event.latlng.toString()
+            
+        //     document.getElementById('coordinates').value = x;
+            
+        // })
+
+        map.on("click",function(e){
+            var x = e.latlng;
+            console.log(x);
+            console.log(x.lat)
+            alert("User Clicked on Map Coordinates: "+x);
+            $("input[name='lat']").val(x.lat);
+            $("input[name='lng']").val(x.lng);
+            L.marker(x).addTo(map);
+        })
+
+        map.on('mousemove', function(e) {
+            // console.log(e);
+            $('#coordinates').html(`Lat: ${e.latlng.lat} Lng: ${e.latlng.lng}`);
+        })
+    </script>
+    {% for d in json_data.properties.periods %}
+    <h4>Temperature: {{d.temperature}}</h4>
+    {% endfor %}
+</body>
+</html>
